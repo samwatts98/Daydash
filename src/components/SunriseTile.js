@@ -27,18 +27,6 @@ const SunriseTile = () => {
     return '';
   };
 
-  const fetchSunriseData = () => {
-    console.log(location.long);
-    fetch(`https://api.sunrise-sunset.org/json?lat=${location.lat}&lng=${location.long}`)
-      .then((response) => response.json())
-      .then((data) => setSunriseData({
-        sunset: convertToMoment(data.results.sunset),
-        sunrise: convertToMoment(data.results.sunrise),
-        midday: convertToMoment(data.results.midday),
-      }))
-      .catch((err) => console.error(err));
-  };
-
   useEffect(() => {
     fetchCoords((pos) => setLocation({
       lat: pos.coords.longitude,
@@ -52,7 +40,16 @@ const SunriseTile = () => {
     }));
   }, []);
 
-  useEffect(() => fetchSunriseData(), [location]);
+  useEffect(() => {
+    fetch(`https://api.sunrise-sunset.org/json?lat=${location.lat}&lng=${location.long}`)
+      .then((response) => response.json())
+      .then((data) => setSunriseData({
+        sunset: convertToMoment(data.results.sunset),
+        sunrise: convertToMoment(data.results.sunrise),
+        midday: convertToMoment(data.results.midday),
+      }))
+      .catch((err) => console.error(err));
+  }, [location]);
 
   return (
     <TimeOfDayTile theme={pickCardStyle()}>
