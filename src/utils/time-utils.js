@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import moment from 'moment';
 
 const TIME_FORMAT = 'HH:mm A';
@@ -18,6 +19,9 @@ export const timeAs = (time) => (moment(time, TIME_FORMAT));
 export const formatTimeEvent = (event, timeToday) => {
   if (timeToday) {
     const inMinutes = timeToday.diff(timeNow(), 'minutes');
+    if (isNaN(inMinutes)) {
+      return `Unknown ${event}!`;
+    }
     const hasHappened = inMinutes <= 0;
 
     return `${event} ${hasHappened ? 'was' : 'is'} at ${moment(timeToday).format(TIME_FORMAT)}. `

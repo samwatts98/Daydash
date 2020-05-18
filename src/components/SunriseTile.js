@@ -13,10 +13,6 @@ const SunriseTile = () => {
 
   const [sunriseData, setSunriseData] = useState({});
 
-  // TODO
-  // Change background based on before or after sunset/sunrise
-  // Show time and date in top left or right
-  // Do temperature and weather
   const pickCardStyle = () => {
     if (sunriseData.sunrise) {
       const now = timeNow();
@@ -31,44 +27,32 @@ const SunriseTile = () => {
     return '';
   };
 
-  const refresh = () => {
-    fetchCoords((pos) => {
-      setLocation({
-        lat: pos.coords.longitude,
-        long: pos.coords.latitude,
-        set: true,
-      }, () => {
-        setLocation({
-          lat: 51.5074,
-          long: 0.1278,
-          set: true,
-        });
-      });
-
-      fetch(`https://api.sunrise-sunset.org/json?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`)
-        .then((response) => response.json())
-        .then((data) => setSunriseData({
-          sunset: convertToMoment(data.results.sunset),
-          sunrise: convertToMoment(data.results.sunrise),
-          midday: convertToMoment(data.results.midday),
-        }))
-        .catch((err) => console.error(err));
-
-      fetch(`https://api.sunrise-sunset.org/json?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}&date=tomorrow`)
-        .then((response) => response.json())
-        .then((data) => setSunriseData((prevState) => ({
-          ...prevState,
-          sunset_tomorrow: convertToMoment(data.results.sunset),
-          sunrise_tomorrow: convertToMoment(data.results.sunrise),
-          midday_tomorrow: convertToMoment(data.results.midday),
-        })))
-        .catch((err) => console.error(err));
-      console.log('refreshed!');
-      window.onload = null;
-    });
+  const fetchSunriseData = () => {
+    console.log(location.long);
+    fetch(`https://api.sunrise-sunset.org/json?lat=${location.lat}&lng=${location.long}`)
+      .then((response) => response.json())
+      .then((data) => setSunriseData({
+        sunset: convertToMoment(data.results.sunset),
+        sunrise: convertToMoment(data.results.sunrise),
+        midday: convertToMoment(data.results.midday),
+      }))
+      .catch((err) => console.error(err));
   };
 
-  useEffect(() => refresh(), []);
+  useEffect(() => {
+    fetchCoords((pos) => setLocation({
+      lat: pos.coords.longitude,
+      long: pos.coords.latitude,
+      set: true,
+    }),
+    () => setLocation({
+      lat: 51.5074,
+      long: 0.1278,
+      set: true,
+    }));
+  }, []);
+
+  useEffect(() => fetchSunriseData(), [location]);
 
   return (
     <TimeOfDayTile theme={pickCardStyle()}>

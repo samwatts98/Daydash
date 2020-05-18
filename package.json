@@ -17,7 +17,7 @@
     "styled-components": "^5.1.0"
   },
   "scripts": {
-    "dev": "npm run-script react-scripts start",
+    "dev": "react-scripts start",
     "start": "serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
