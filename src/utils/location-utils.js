@@ -1,9 +1,4 @@
-const fetchCoords = async (success) => {
-  const failure = () => {
-    alert('Failed to retrieve location. Please check your Location Permissions.');
-  };
-  return navigator.geolocation.getCurrentPosition(success, failure);
-};
+const fetchCoords = async (s, f) => navigator.geolocation.getCurrentPosition(s, f);
 
 
 export default fetchCoords;

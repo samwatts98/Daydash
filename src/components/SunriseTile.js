@@ -37,6 +37,12 @@ const SunriseTile = () => {
         lat: pos.coords.longitude,
         long: pos.coords.latitude,
         set: true,
+      }, () => {
+        setLocation({
+          lat: 51.5074,
+          long: 0.1278,
+          set: true,
+        });
       });
 
       fetch(`https://api.sunrise-sunset.org/json?lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`)
