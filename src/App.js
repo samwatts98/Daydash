@@ -1,16 +1,25 @@
 import React from 'react';
-import { TileContainer } from './components/styles.css';
+import { TileContainer, TimeOfDayTile, TileTheme } from './components/styles.css';
 import SunriseTile from './components/SunriseTile';
+import Header from './components/Header';
 
 
 function App() {
   return (
     <div className="App">
       <>
-        <h1>Daydash</h1>
-        <TileContainer>
-          <SunriseTile />
-        </TileContainer>
+        <Header />
+        <main>
+          <TileContainer>
+            <SunriseTile />
+            {/* <TimeOfDayTile theme={TileTheme.daytime} />
+            <TimeOfDayTile theme={TileTheme.sunset} />
+            <TimeOfDayTile theme={TileTheme.night} />
+            <TimeOfDayTile theme={TileTheme.daytime} />
+            <TimeOfDayTile theme={TileTheme.sunset} />
+            <TimeOfDayTile theme={TileTheme.night} /> */}
+          </TileContainer>
+        </main>
       </>
     </div>
   );

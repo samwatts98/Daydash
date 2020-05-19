@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TimeOfDayTile, TileTheme } from './styles.css';
-import {
-  convertToMoment, formatTimeEvent, timeNow,
-} from '../utils/time-utils';
+import { convertToMoment, formatTimeEvent, timeNow } from '../utils/time-utils';
 import fetchCoords from '../utils/location-utils';
 
 
@@ -13,7 +11,7 @@ const SunriseTile = () => {
 
   const [sunriseData, setSunriseData] = useState({});
 
-  const pickCardStyle = () => {
+  const pickCardTheme = () => {
     if (sunriseData.sunrise) {
       const now = timeNow();
       if (sunriseData.sunrise.diff(now, 'minute') > 0 || sunriseData.sunset.diff(now, 'minute') <= 0) {
@@ -52,13 +50,8 @@ const SunriseTile = () => {
   }, [location]);
 
   return (
-    <TimeOfDayTile theme={pickCardStyle()}>
+    <TimeOfDayTile theme={pickCardTheme()}>
       <p>{location.set ? `Your location is ${location.lat.toFixed(4)}, ${location.long.toFixed(4)}.` : ''}</p>
-      <p>
-        Time now is
-        {' '}
-        {timeNow(true)}
-      </p>
       <p>{formatTimeEvent('Sunset', sunriseData.sunset, sunriseData.sunset_tomorrow)}</p>
       <p>{formatTimeEvent('Sunrise', sunriseData.sunrise, sunriseData.sunrise_tomorrow)}</p>
     </TimeOfDayTile>
