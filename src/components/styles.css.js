@@ -12,6 +12,8 @@ export const TileContainer = styled.div`
 
   width: 80vw;
   height: 60vh;
+  min-height: fit-content;
+
 
   background: #eee;
   border-radius: 10px;
@@ -29,6 +31,7 @@ export const TimeOfDayTile = styled.div`
   display: flex;
   flex-flow: column;
   padding: 0 1rem;
+  overflow: hidden;
 
   -webkit-box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
   -moz-box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
