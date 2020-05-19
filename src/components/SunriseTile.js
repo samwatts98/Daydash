@@ -29,8 +29,8 @@ const SunriseTile = () => {
 
   useEffect(() => {
     fetchCoords((pos) => setLocation({
-      lat: pos.coords.longitude,
-      long: pos.coords.latitude,
+      lat: pos.coords.latitude,
+      long: pos.coords.longitude,
       set: true,
     }),
     () => setLocation({

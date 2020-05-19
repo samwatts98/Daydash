@@ -28,6 +28,7 @@ export const TimeOfDayTile = styled.div`
   color: white;
   display: flex;
   flex-flow: column;
+  padding: 0 1rem;
 
   -webkit-box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
   -moz-box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
