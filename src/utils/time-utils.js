@@ -4,9 +4,12 @@ import moment from 'moment';
 const TIME_FORMAT = 'HH:mm A';
 const DATE_FORMAT = 'dddd, Do MMMM YYYY';
 
-export const convertToMoment = (stringTime) => (
-  moment.utc(stringTime, 'H:mm:ss A').utcOffset(moment().utcOffset())
-);
+export const convertToMoment = (stringTime) => {
+  if (stringTime) {
+    return moment.utc(stringTime, 'H:mm:ss A').utcOffset(moment().utcOffset());
+  }
+  return null;
+};
 
 export const timeNow = (formatted) => {
   if (formatted) {
@@ -25,7 +28,7 @@ export const dateNow = (formatted) => {
 
 export const timeAs = (time) => (moment(time, TIME_FORMAT));
 
-export const formatTimeEvent = (event, timeHappening) => {
+export const formatTimeEvent = (event, timeHappening, params) => {
   if (timeHappening) {
     const inMinutes = timeHappening.diff(timeNow(), 'minutes');
     if (isNaN(inMinutes)) {
@@ -33,10 +36,13 @@ export const formatTimeEvent = (event, timeHappening) => {
     }
     const hasHappened = inMinutes <= 0;
 
+    if (params.justRelative) {
+      return `${event} ${timeHappening.fromNow()}!`;
+    }
     return `${event} ${hasHappened ? 'was' : 'is'} at ${
       moment(timeHappening).format(TIME_FORMAT)} (${timeHappening.fromNow()}!).`;
   }
-  return '';
+  return null;
 };
 
 export const timeRelativeToEvent = (timeToday) => timeToday.diff(moment('12:01PM', 'HH:mmA'), 'minute');

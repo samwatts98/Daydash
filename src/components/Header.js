@@ -1,21 +1,23 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { HeaderComponent, DateTimeWrapper } from './styles.css';
 import { dateNow, timeNow } from '../utils/time-utils';
 
-const DateTimeWrapper = styled.div`
-display: inline-flex;
-justify-content: space-around;
-width: 100%;
-`;
-
-const Header = () => (
-  <header>
-    <h1>Daydash</h1>
+const Header = ({ theme }) => (
+  <HeaderComponent theme={theme}>
+    <div>
+      <h1>Daydash</h1>
+    </div>
     <DateTimeWrapper>
       <p>{dateNow(true)}</p>
       <p>{timeNow(true)}</p>
     </DateTimeWrapper>
-  </header>
+  </HeaderComponent>
 );
+
+Header.propTypes = {
+  theme: PropTypes.any.isRequired,
+};
 
 export default Header;

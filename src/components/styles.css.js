@@ -1,8 +1,21 @@
 import styled from 'styled-components';
 
+export const DateTimeWrapper = styled.div`
+display: inline-flex;
+justify-content: space-around;
+width: 100%;
+`;
+
+export const HeaderComponent = styled.header`
+background : ${(props) => props.theme.background};
+margin-bottom: 2rem;
+padding-top: 1rem;
+`;
+
+
 export const TileContainer = styled.div`
   display: flex;
-  flex-flow: column;
+  flex-flow: row wrap;
   justify-content: space-around;
 
   width: 80%;
@@ -17,25 +30,21 @@ export const TileContainer = styled.div`
   box-shadow: 0px 0px 20px 10px rgba(204, 204, 204, 1);
 `;
 
-export const TimeOfDayTile = styled.div`
+export const Tile = styled.div`
   border-radius: 10px;
   padding: 0 1rem;
+  margin: 1rem;
   overflow: hidden;
 
   display: flex;
   flex-flow: column;
+  flex-grow: 1;
 
   -webkit-box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
   -moz-box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
   box-shadow: 0px 0px 20px 10px rgba(170, 170, 170, 1);
 
-  color: white;
   background : ${(props) => props.theme.background};
-
-  :not(:last-child) {
-    margin-bottom: 1rem;
-  }
-
 `;
 
 export const TileTheme = {
