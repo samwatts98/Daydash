@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
-export const DateTimeWrapper = styled.div`
+export const HeaderSummary = styled.div`
 display: inline-flex;
 justify-content: space-around;
 width: 100%;
+font-size: 0.8rem;
 `;
 
 export const HeaderComponent = styled.header`

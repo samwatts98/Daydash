@@ -4,9 +4,9 @@ import moment from 'moment';
 const TIME_FORMAT = 'HH:mm A';
 const DATE_FORMAT = 'dddd, Do MMMM YYYY';
 
-export const convertToMoment = (stringTime) => {
-  if (stringTime) {
-    return moment.utc(stringTime, 'H:mm:ss A').utcOffset(moment().utcOffset());
+export const unixToMoment = (unixTimestamp) => {
+  if (unixTimestamp) {
+    return moment.unix(unixTimestamp);
   }
   return null;
 };

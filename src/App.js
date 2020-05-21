@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { TileContainer, TileTheme } from './components/styles.css';
-import { timeNow, convertToMoment } from './utils/time-utils';
+import { timeNow, unixToMoment } from './utils/time-utils';
 import SolarEventTile from './components/SolarEventTile';
 import Header from './components/Header';
 import fetchCoords from './utils/location-utils';
 
+import('dotenv').then((dotenv) => dotenv.config());
 
 const App = () => {
-  const [location, setLocation] = useState({ set: false });
-
+  const [coordinates, setCoordinates] = useState({ set: false });
   const [sunriseData, setSunriseData] = useState({});
+  const [location, setLocation] = useState('');
 
   useEffect(() => {
-    fetchCoords((pos) => setLocation({
+    fetchCoords((pos) => setCoordinates({
       lat: pos.coords.latitude,
       long: pos.coords.longitude,
       set: true,
     }),
-    () => setLocation({
+    () => setCoordinates({
       lat: 51.5074,
       long: 0.1278,
       set: true,
@@ -25,14 +26,22 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`https://api.sunrise-sunset.org/json?lat=${location.lat}&lng=${location.long}`)
-      .then((response) => response.json())
-      .then((data) => setSunriseData({
-        sunset: convertToMoment(data.results.sunset),
-        sunrise: convertToMoment(data.results.sunrise),
-        midday: convertToMoment(data.results.midday),
-      }));
-  }, [location]);
+    if (coordinates.set) {
+      fetch(`https://api.opencagedata.com/geocode/v1/json?q=${coordinates.lat}+${coordinates.long}&key=${process.env.REACT_APP_OPENCAGE_KEY}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data.results);
+          const sunData = data.results[0].annotations.sun;
+          setSunriseData({
+            sunset: unixToMoment(sunData.set.apparent),
+            sunrise: unixToMoment(sunData.rise.apparent),
+          });
+
+          const locationData = data.results[0].components;
+          setLocation(`${locationData.county}, ${locationData.country}`);
+        });
+    }
+  }, [coordinates]);
 
   const pickHeaderTheme = () => {
     if (sunriseData.sunrise) {
@@ -51,7 +60,7 @@ const App = () => {
   return (
     <div className="App">
       <>
-        <Header theme={pickHeaderTheme()} />
+        <Header theme={pickHeaderTheme()} location={location} />
         <main>
           <TileContainer>
             <SolarEventTile event="Sunrise" time={sunriseData.sunrise} theme={TileTheme.daytime} />
