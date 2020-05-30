@@ -3,6 +3,7 @@ import moment from 'moment';
 
 const TIME_FORMAT = 'HH:mm A';
 const DATE_FORMAT = 'dddd, Do MMMM YYYY';
+const DAY_FORMAT = 'ddd';
 
 export const unixToMoment = (unixTimestamp) => {
   if (unixTimestamp) {
@@ -25,6 +26,7 @@ export const dateNow = (formatted) => {
   return moment();
 };
 
+export const formatDay = (offset) => moment().add(offset, 'days').format(DAY_FORMAT);
 
 export const timeAs = (time) => (moment(time, TIME_FORMAT));
 
@@ -36,7 +38,7 @@ export const formatTimeEvent = (event, timeHappening, params) => {
     }
     const hasHappened = inMinutes <= 0;
 
-    if (params.justRelative) {
+    if (params && params.justRelative) {
       return `${event} ${timeHappening.fromNow()}!`;
     }
     return `${event} ${hasHappened ? 'was' : 'is'} at ${

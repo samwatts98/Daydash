@@ -6,20 +6,24 @@ import { Tile } from './styles.css';
 import { formatTimeEvent, timeNow } from '../utils/time-utils';
 
 
-const SolarEventTile = ({ event, time, theme }) => (
+const TimeEventTile = ({
+  event, time, theme, Icon,
+}) => (
   <Tile theme={theme}>
     <p>{formatTimeEvent(event, time, { justRelative: true })}</p>
+    <Icon className="tile-icon" />
   </Tile>
 );
 
-SolarEventTile.propTypes = {
+TimeEventTile.propTypes = {
   event: PropTypes.string.isRequired,
   time: MomentPropTypes.momentObj,
   theme: PropTypes.any.isRequired,
+  Icon: PropTypes.elementType.isRequired,
 };
 
-SolarEventTile.defaultProps = {
+TimeEventTile.defaultProps = {
   time: timeNow(),
 };
 
-export default SolarEventTile;
+export default TimeEventTile;

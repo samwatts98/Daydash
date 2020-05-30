@@ -1,72 +1,84 @@
 import React, { useState, useEffect } from 'react';
+import {
+  FiSunset, FiSunrise, FiMoon, FiCloud, FiCloudRain, FiSun, FiCloudSnow,
+} from 'react-icons/fi';
 import { TileContainer, TileTheme } from './components/styles.css';
-import { timeNow, unixToMoment } from './utils/time-utils';
-import SolarEventTile from './components/SolarEventTile';
+import { timeNow, unixToMoment, formatDay } from './utils/time-utils';
+import TimeEventTile from './components/TimeEventTile';
+import WeatherTile from './components/WeatherTile';
 import Header from './components/Header';
-import fetchCoords from './utils/location-utils';
 
 import('dotenv').then((dotenv) => dotenv.config());
 
+const SOLAR_API_URL = (coords) => {
+  const query = coords.set ? `${coords.lat}+${coords.long}` : process.env.REACT_APP_DEFAULT_LOCATION;
+  return `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=${process.env.REACT_APP_OPENCAGE_KEY}`;
+};
+
+const pickHeaderTheme = (solarState) => {
+  if (solarState.sunrise) {
+    const now = timeNow();
+    if (solarState.sunrise.diff(now, 'minute') > 0 || solarState.sunset.diff(now, 'minute') <= 0) {
+      return TileTheme.night;
+    }
+    if (solarState.sunset.diff(now, 'minute') <= 120) {
+      return TileTheme.sunset;
+    }
+    return TileTheme.daytime;
+  }
+  return '';
+};
+
 const App = () => {
-  const [coordinates, setCoordinates] = useState({ set: false });
-  const [sunriseData, setSunriseData] = useState({});
+  const [coordinates, setCoordinates] = useState({});
+  const [solarSchedule, setSolarSchedule] = useState({});
   const [location, setLocation] = useState('');
 
   useEffect(() => {
-    fetchCoords((pos) => setCoordinates({
-      lat: pos.coords.latitude,
-      long: pos.coords.longitude,
-      set: true,
-    }),
-    () => setCoordinates({
-      lat: 51.5074,
-      long: 0.1278,
-      set: true,
-    }));
+    import('./utils/location-utils')
+      .then((module) => module.default((position) => setCoordinates({
+        lat: position.coords.latitude,
+        long: position.coords.longitude,
+        valueSet: true,
+        readyToLoad: true,
+      }), () => setCoordinates({
+        valueSet: false,
+        readyToLoad: true,
+      })));
   }, []);
 
   useEffect(() => {
-    if (coordinates.set) {
-      fetch(`https://api.opencagedata.com/geocode/v1/json?q=${coordinates.lat}+${coordinates.long}&key=${process.env.REACT_APP_OPENCAGE_KEY}`)
+    if (coordinates.readyToLoad) {
+      fetch(SOLAR_API_URL(coordinates))
         .then((response) => response.json())
         .then((data) => {
-          console.log(data.results);
+          console.log(data);
           const sunData = data.results[0].annotations.sun;
-          setSunriseData({
+          setSolarSchedule({
             sunset: unixToMoment(sunData.set.apparent),
             sunrise: unixToMoment(sunData.rise.apparent),
           });
-
-          const locationData = data.results[0].components;
-          setLocation(`${locationData.county}, ${locationData.country}`);
+          setLocation(data.results[0].formatted);
         });
     }
   }, [coordinates]);
 
-  const pickHeaderTheme = () => {
-    if (sunriseData.sunrise) {
-      const now = timeNow();
-      if (sunriseData.sunrise.diff(now, 'minute') > 0 || sunriseData.sunset.diff(now, 'minute') <= 0) {
-        return TileTheme.night;
-      }
-      if (sunriseData.sunset.diff(now, 'minute') <= 120) {
-        return TileTheme.sunset;
-      }
-      return TileTheme.daytime;
-    }
-    return '';
-  };
-
   return (
     <div className="App">
       <>
-        <Header theme={pickHeaderTheme()} location={location} />
+        <Header theme={pickHeaderTheme(solarSchedule)} location={location} />
         <main>
           <TileContainer>
-            <SolarEventTile event="Sunrise" time={sunriseData.sunrise} theme={TileTheme.daytime} />
-            <SolarEventTile event="Sunset" time={sunriseData.sunset} theme={TileTheme.sunset} />
-            <SolarEventTile event="Midnight" time={timeNow().endOf('day')} theme={TileTheme.night} />
-
+            <TimeEventTile event="Sunrise" time={solarSchedule.sunrise} theme={TileTheme.daytime} Icon={FiSunrise} />
+            <TimeEventTile event="Sunset" time={solarSchedule.sunset} theme={TileTheme.sunset} Icon={FiSunset} />
+            <TimeEventTile event="Midnight" time={timeNow().endOf('day')} theme={TileTheme.night} Icon={FiMoon} />
+          </TileContainer>
+          <p style={{ color: 'red' }}> Weather data retreval not yet implemented, only UI demonstration..</p>
+          <TileContainer>
+            <WeatherTile day="Today" temp="23°C" theme={TileTheme.sunshine} Icon={FiSun} />
+            <WeatherTile day={formatDay(1)} temp="18°C" theme={TileTheme.cloudy} Icon={FiCloud} />
+            <WeatherTile day={formatDay(2)} temp="6°C" theme={TileTheme.rain} Icon={FiCloudRain} />
+            <WeatherTile day={formatDay(3)} temp="-3°C" theme={TileTheme.cloudy} Icon={FiCloudSnow} />
           </TileContainer>
         </main>
       </>
