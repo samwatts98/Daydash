@@ -4,6 +4,7 @@ import moment from 'moment';
 const TIME_FORMAT = 'HH:mm A';
 const DATE_FORMAT = 'dddd, Do MMMM YYYY';
 const DAY_FORMAT = 'ddd';
+const METAWEATHER_FORMAT = 'YYYY-MM-DD-Thh:mm';
 
 export const unixToMoment = (unixTimestamp) => {
   if (unixTimestamp) {
@@ -11,6 +12,8 @@ export const unixToMoment = (unixTimestamp) => {
   }
   return null;
 };
+
+export const convertMetaWeather = (str) => moment(str.substring(0, 17), METAWEATHER_FORMAT);
 
 export const timeNow = (formatted) => {
   if (formatted) {
@@ -26,7 +29,7 @@ export const dateNow = (formatted) => {
   return moment();
 };
 
-export const formatDay = (offset) => moment().add(offset, 'days').format(DAY_FORMAT);
+export const formatDay = (time, offset) => (offset ? time.add(offset, 'days').format(DAY_FORMAT) : time.format(DAY_FORMAT));
 
 export const timeAs = (time) => (moment(time, TIME_FORMAT));
 
